@@ -20,8 +20,6 @@ builder.Services.AddHangfire(x =>
 // Add Hangfire server
 builder.Services.AddHangfireServer();
 
-
-
 // Configure Entity Framework Core with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("connectionstring"))

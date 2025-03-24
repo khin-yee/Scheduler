@@ -9,5 +9,7 @@ namespace SchedulerTest.Domain
     public  interface IProductRepo
     {
         List<Product> GetProducts();
+        bool UpdateAdaptorProduct(List<Product> products);
+
     }
 }

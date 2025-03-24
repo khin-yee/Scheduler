@@ -16,5 +16,6 @@ namespace SchedulerTest.Repository
          
         }
         public DbSet<Product> Product { get; set; }
+        public DbSet<AdaptorProduct> AdaptorProduct { get; set; }
     }
 }

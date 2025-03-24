@@ -31,6 +31,7 @@ namespace SchedulerTest.Service
         {
             string filePathName = string.Empty;
             var products =  GetProducts();
+            _repo.UpdateAdaptorProduct(products);
             filePathName = WriteDataToFileAsync(products, fileName);
             return filePathName;
         }
