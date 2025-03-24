@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchedulerTest.Domain;
+using SchedulerTest.Domain.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +17,7 @@ namespace SchedulerTest.Repository
         }
         public DbSet<Product> Product { get; set; }
         public DbSet<AdaptorProduct> AdaptorProduct { get; set; }
+
+        public DbSet<ProductSchedule> ProductSchedule { get; set; }
     }
 }

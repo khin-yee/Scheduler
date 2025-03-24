@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SchedulerTest.Domain
+namespace SchedulerTest.Domain.Domain
 {
     public class Product 
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SchedulerTest.Domain;
+using SchedulerTest.Domain.IServices;
 using SchedulerTest.Service.Filter;
 using System;
 using System.Collections.Generic;

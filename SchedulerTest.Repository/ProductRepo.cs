@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchedulerTest.Domain;
+using SchedulerTest.Domain.Domain;
+using SchedulerTest.Domain.IRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,20 @@ namespace SchedulerTest.Repository
             _context = context;
         }
 
-        public List<Product> GetProducts()
+        public async Task<List<ProductSchedule>> GetProductSchedule()
         {
-            var products =  _context.Product.Where(x => x.IsActive == true).ToList();
+            var scheduleproducts =await  _context.ProductSchedule.AsNoTracking().Where(x => x.IsActive == true).ToListAsync();
+            return scheduleproducts;
+        }
+        public async Task<List<Product>> GetProducts()
+        {           
+            var products = await  _context.Product.Where(x => x.IsActive == true).ToListAsync();
             return products;
+        }
+        public async Task<List<AdaptorProduct>> GetAdaptorProducts()
+        {
+            var adaptorproducts = await _context.AdaptorProduct.Where(x => x.IsActive == true).ToListAsync();
+            return adaptorproducts;
         }
         public bool UpdateAdaptorProduct(List<Product> products)
         {
@@ -51,6 +62,20 @@ namespace SchedulerTest.Repository
                 return true;
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Update(AdaptorProduct adaptorproduct)
+        {
+            try
+            {
+                _context.AdaptorProduct.Update(adaptorproduct);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

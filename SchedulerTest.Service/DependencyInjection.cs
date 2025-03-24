@@ -1,8 +1,10 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
-using SchedulerTest.Domain;
+using SchedulerTest.Domain.IRepo;
+using SchedulerTest.Domain.IServices;
 using SchedulerTest.Repository;
 using SchedulerTest.Service.Filter;
+using SchedulerTest.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +18,10 @@ namespace SchedulerTest.Service
         public static IServiceCollection AddService(this IServiceCollection services)
         {
             GlobalJobFilters.Filters.Add(new AutomaticJobDisposalAttribute());
+            services.AddScoped<IProductScheduleService, ProductScheduleService>();
+            services.AddHttpClient<IHttpClientService, HttpClientService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<IProductRepo, ProductRepo>();
+            services.AddScoped<IProductRepo, ProductRepo>();
             return services;
         }
 

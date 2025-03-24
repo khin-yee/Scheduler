@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchedulerTest.Domain;
+using SchedulerTest.Domain.Domain;
+using SchedulerTest.Domain.IServices;
 using SchedulerTest.Service;
+using System.Threading.Tasks;
 
 namespace SchedulerTest.Api.Controllers
 {
@@ -16,9 +18,9 @@ namespace SchedulerTest.Api.Controllers
             _productservice = productservice;
         }
         [HttpGet]
-        public  List<Product> GetProducts()
+        public  async Task<List<Product>> GetProducts()
         {
-            return  _productservice.GetProducts();
+            return await  _productservice.GetProducts();
         }
 
 
@@ -33,7 +35,7 @@ namespace SchedulerTest.Api.Controllers
         [Route("FileUpload")]
         public async Task<IActionResult> FileUpload()
         {
-            return Ok(_productservice.CreateFileWithTxnData("ProductList"));
+            return Ok( await _productservice.CreateFileWithTxnData("ProductList"));
         }
     }
 }

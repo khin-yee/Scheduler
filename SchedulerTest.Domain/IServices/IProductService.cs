@@ -1,14 +1,15 @@
-﻿using System;
+﻿using SchedulerTest.Domain.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SchedulerTest.Domain
+namespace SchedulerTest.Domain.IServices
 {
     public interface IProductService
     {
-        List<Product> GetProducts();
+        Task<List<Product>> GetProducts();
         string CreateAsync(string content, string filename);
         Task<string> CreateFileWithTxnData(string fileName);
 

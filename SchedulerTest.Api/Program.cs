@@ -41,7 +41,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.StartRecurringJob(builder.Configuration);
 
-// Enable Hangfire Dashboard (optional)
 app.UseHangfireDashboard();
 
 app.MapControllers();
