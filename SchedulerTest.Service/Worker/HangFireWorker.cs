@@ -21,9 +21,7 @@ public static class HangFireWorker
         {
             var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
             var productService = scope.ServiceProvider.GetRequiredService<IProductService>();
-
             string cronExpression = config["CronExpression:ProductSchedular"] ?? "*/2 * * * *"; // Default: Every 2 minutes
-
             recurringJobManager.AddOrUpdate(
                 "ProductTesting",
                 () => productService.CreateFileWithTxnData("test"),

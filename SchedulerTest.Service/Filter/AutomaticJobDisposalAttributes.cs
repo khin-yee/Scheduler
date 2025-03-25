@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SchedulerTest.Service.Filter
 {
-    public  class AutomaticJobDisposalAttribute: JobFilterAttribute,IApplyStateFilter
+    public class AutomaticJobDisposalAttribute : JobFilterAttribute, IApplyStateFilter
     {
         public void OnStateApplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
         {
@@ -25,7 +25,6 @@ namespace SchedulerTest.Service.Filter
                 }
             }
         }
-
         public void OnStateUnapplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
         {
 

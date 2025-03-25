@@ -14,57 +14,87 @@ using System.Threading.Tasks;
 
 namespace SchedulerTest.Service.Services
 {
-    public class ProductService:IProductService
+    public class ProductService : IProductService
     {
         private readonly IHttpClientService _httpclient;
         private readonly IProductRepo _repo;
         private string filepath;
-        public ProductService(IProductRepo repo,IHttpClientService httpclient)
+        public ProductService(IProductRepo repo, IHttpClientService httpclient)
         {
             _repo = repo;
             _httpclient = httpclient;
             filepath = "E:\\Temp";
         }
-        public async Task<List<AdaptorProduct>> GetAdaporProducts()
-        {
-            var adaptorproducts =await  _repo.GetAdaptorProducts();
-            return adaptorproducts;
-        }
 
-        public async Task<List<Product>> GetProducts()
-        {
-            var products =  await _repo.GetProducts();
-            return products;
-        }
         public async Task<string> CreateFileWithTxnData(string fileName)
         {
-
             string filePathName = string.Empty;
-           var products = await GetProducts();
-            var adaptor_products = await CallAPI();
-
-            //_repo.UpdateAdaptorProduct(products);
-            ComapreAndUpdateAdaptorProducts(adaptor_products); 
-             filePathName = WriteDataToFileAsync(products, fileName);
+            var products = await GetProducts();
+            var adaptor_products = await CallAPI(); //_repo.UpdateAdaptorProduct(products);
+            var response = await ComapreAndUpdateAdaptorProducts(adaptor_products);
+            if (response.Count()!= 0)
+                filePathName = WriteDataToFileAsync(response, fileName);
             return filePathName;
         }
 
-        public async  void ComapreAndUpdateAdaptorProducts(ScheduleProductResponse adaptorproducts)
+        //Private Method 
+        public async Task<List<AdaptorProduct>> GetAdaporProducts()
         {
+            var adaptorproducts = await _repo.GetAdaptorProducts();
+            return adaptorproducts;
+        }
+        public async Task<List<Product>> GetProducts()
+        {
+            var products = await _repo.GetProducts();
+            return products;
+        }
+        public async Task<List<ExcelReportModel>> ComapreAndUpdateAdaptorProducts(ScheduleProductResponse adaptorproducts)
+        {
+            var responselist = new List<ExcelReportModel>();
             var adaptorProducts = await GetAdaporProducts();
             foreach (var item in adaptorproducts.Products)
             {
                 var existproducts = adaptorProducts.FirstOrDefault(x => x.Code == item.Code);
-                if(existproducts == null)
+                if (existproducts == null)
                 {
-                   ///insert 
+                    var adaptorProduct = new AdaptorProduct()
+                    {
+                        Code = item.Code,
+                        Name = item.Name,
+                        Amount = item.Amount,
+                        BillerCode = item.BillerCode,
+                        AdaptorCode = item.Code,
+                        ProductCode = item.Code
+                    };
+                    if (_repo.AddAdaptorProduct(adaptorProduct))
+                    {
+                        var product = new Product()
+                        {
+                            Code = item.Code,
+                            NameEng = item.Name,
+                            NameMmr = item.Name,
+                            BillerCode = item.BillerCode,
+                            DescriptionEng = item.Name,
+                            DescriptionMmr = item.Name,
+                            Amount = item.Amount??0                               
+                        };
+                        _repo.AddProduct(product);
+                    };
                 }
-                if(item.Code == existproducts.Code && item.Amount != existproducts.Amount) 
+                else if(item.Code == existproducts.Code && item.Amount != existproducts.Amount)
                 {
+                    var response = new ExcelReportModel();
+                    response.ProductName = existproducts.Name;
+                    response.ProductCode = existproducts.Code;
+                    response.OldAmount = existproducts.Amount??0;
+                    response.NewAmount = item.Amount??0;
+                    response.UpdateAt = DateTime.Now.ToString("d MMM yyy hh:mm:ss");
+                    responselist.Add(response);
                     existproducts.Amount = item.Amount;
                     _repo.Update(existproducts);
                 }
-            }           
+            }
+            return responselist;
         }
         public async Task<ScheduleProductResponse> CallAPI()
         {
@@ -72,14 +102,13 @@ namespace SchedulerTest.Service.Services
             var response = await _httpclient.SendAsync<ScheduleProductResponse>(endpoint, "100", HttpMethod.Get);
             return response;
         }
-        public string WriteDataToFileAsync(List<Product> transactions, string fileName)
+        public string WriteDataToFileAsync(List<ExcelReportModel> data, string fileName)
         {
             EnsureDirectoryExists(filepath);
             var filePathName = Path.Combine(filepath, $"{fileName}_{DateTime.Now:yyyyMMddhhmm}.xlsx");
-            GenerateExcel(filePathName, transactions);
+            GenerateExcel(filePathName, data);
             return filePathName;
         }
-
         public void GenerateExcel<T>(string filepathname, List<T> data)
         {
             byte[] excelFile = new byte[data.Count];
@@ -100,17 +129,14 @@ namespace SchedulerTest.Service.Services
         }
         private DataTable ConvertToDataTable<T>(List<T> data)
         {
-
             DataTable table = new DataTable(typeof(T).Name);
             var properties = typeof(T).GetProperties();
-
             foreach (var prop in properties)
             {
                 var displayName = prop.GetCustomAttributes(typeof(DisplayAttribute), false)
                                       .FirstOrDefault() is DisplayAttribute display
                     ? display.Name
                     : prop.Name;
-
                 table.Columns.Add(displayName, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
             }
 
@@ -123,8 +149,6 @@ namespace SchedulerTest.Service.Services
                 }
                 table.Rows.Add(values);
             }
-
-
             return table;
         }
         public string CreateAsync(string content, string filename)
@@ -141,7 +165,6 @@ namespace SchedulerTest.Service.Services
                     return filepath;
                 }
             }
-
         }
         private void EnsureDirectoryExists(string path)
         {

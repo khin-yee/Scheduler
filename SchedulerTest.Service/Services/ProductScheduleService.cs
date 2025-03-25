@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace SchedulerTest.Service.Services
 {
-    public class ProductScheduleService:IProductScheduleService
+    public class ProductScheduleService : IProductScheduleService
     {
         private readonly IProductRepo _repo;
 
-        public ProductScheduleService (IProductRepo repo)
+        public ProductScheduleService(IProductRepo repo)
         {
             _repo = repo;
         }
@@ -22,7 +22,7 @@ namespace SchedulerTest.Service.Services
         {
             var response = new ScheduleProductResponse();
             var products = await _repo.GetProductSchedule();
-            if(products == null)
+            if (products == null)
             {
                 response.ErrorCode = 1;
                 response.ErrorMessage = "fail";
@@ -30,6 +30,6 @@ namespace SchedulerTest.Service.Services
             }
             response.Products = products;
             return response;
-        } 
+        }
     }
 }

@@ -9,23 +9,52 @@ using System.Threading.Tasks;
 
 namespace SchedulerTest.Repository
 {
-    public class ProductRepo:IProductRepo
+    public class ProductRepo : IProductRepo
     {
         protected readonly ApplicationDbContext _context;
 
-        public ProductRepo(ApplicationDbContext context) {
+        public ProductRepo(ApplicationDbContext context)
+        {
             _context = context;
         }
 
         public async Task<List<ProductSchedule>> GetProductSchedule()
         {
-            var scheduleproducts =await  _context.ProductSchedule.AsNoTracking().Where(x => x.IsActive == true).ToListAsync();
+            var scheduleproducts = await _context.ProductSchedule.Where(x => x.IsActive == true).ToListAsync();
             return scheduleproducts;
         }
         public async Task<List<Product>> GetProducts()
-        {           
-            var products = await  _context.Product.Where(x => x.IsActive == true).ToListAsync();
+        {
+            var products = await _context.Product.Where(x => x.IsActive == true).ToListAsync();
             return products;
+        }
+        public bool AddProduct(Product adaptorproduct)
+        {
+            try
+            {
+                _context.Product.Add(adaptorproduct);
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool AddAdaptorProduct(AdaptorProduct adaptorproduct)
+        {
+            try
+            {
+                _context.AdaptorProduct.Add(adaptorproduct);
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
         }
         public async Task<List<AdaptorProduct>> GetAdaptorProducts()
         {
@@ -36,11 +65,11 @@ namespace SchedulerTest.Repository
         {
             try
             {
-                var adaptorproducts = _context.AdaptorProduct.Where(x => x.IsActive==true&&x.ProductCode!= null ).ToList();
+                var adaptorproducts = _context.AdaptorProduct.Where(x => x.IsActive==true&&x.ProductCode!= null).ToList();
                 foreach (var product in products)
                 {
                     var adaptorproduct = adaptorproducts.FirstOrDefault(x => x.ProductCode==product.Code&&x.Code != null);
-                   
+
                     if (adaptorproduct != null && adaptorproduct.Amount != null && product.Amount != null)
                     {
                         if (adaptorproduct.Amount != product.Amount)
@@ -52,7 +81,7 @@ namespace SchedulerTest.Repository
                                 _context.Product.Update(product);
                                 _context.SaveChanges();
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 throw ex;
                             }
@@ -61,12 +90,11 @@ namespace SchedulerTest.Repository
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
-
         public bool Update(AdaptorProduct adaptorproduct)
         {
             try

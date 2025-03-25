@@ -15,6 +15,7 @@ namespace SchedulerTest.Domain.Domain
         public string? Name { get; set; }
         public decimal? Amount { get; set; }
         public bool IsActive { get; set; }
+        public string BillerCode { get; set; }
         
     }
 }

@@ -13,14 +13,14 @@ namespace SchedulerTest.Domain.Domain
         public int Id { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
-        public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; } 
+        public string? UpdatedBy { get; set; } 
         public string? BillerCode { get; set; }
         public string? AdaptorCode { get; set; }
         public string? ProductCode { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
         public decimal? Amount { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

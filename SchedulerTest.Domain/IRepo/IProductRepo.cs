@@ -13,10 +13,9 @@ namespace SchedulerTest.Domain.IRepo
         Task<List<Product>> GetProducts();
         bool UpdateAdaptorProduct(List<Product> products);
         Task<List<AdaptorProduct>> GetAdaptorProducts();
-
         bool Update(AdaptorProduct adaptorproduct);
-
-
+        bool AddAdaptorProduct(AdaptorProduct adaptorproduct);
+        bool AddProduct(Product adaptorproduct);
 
     }
 }

@@ -17,12 +17,12 @@ namespace SchedulerTest.Api.Controllers
         {
             _productservice = productservice;
         }
-        [HttpGet]
-        public  async Task<List<Product>> GetProducts()
-        {
-            return await  _productservice.GetProducts();
-        }
 
+        [HttpGet]
+        public async Task<List<Product>> GetProducts()
+        {
+            return await _productservice.GetProducts();
+        }
 
         [HttpPost]
         [Route("FileCreate")]
@@ -35,7 +35,7 @@ namespace SchedulerTest.Api.Controllers
         [Route("FileUpload")]
         public async Task<IActionResult> FileUpload()
         {
-            return Ok( await _productservice.CreateFileWithTxnData("ProductList"));
+            return Ok(await _productservice.CreateFileWithTxnData("ProductList"));
         }
     }
 }
